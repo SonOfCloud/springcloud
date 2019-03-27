@@ -40,7 +40,7 @@ class StudentControllerTest extends Specification {
         feignGradeService.getGradeNameById(_) >>> ["一年级","二年级"]
         when:
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/feign/students/info/Jeremy").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())// 模拟向testRest发送get请求
+                .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andReturn()
         List<StudentResponseDto> studentResponseDto = mapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<StudentResponseDto>>(){})
