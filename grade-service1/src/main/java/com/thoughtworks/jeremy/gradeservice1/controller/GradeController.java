@@ -40,11 +40,10 @@ public class GradeController {
     @RequestMapping(value = {"/queryDsl/grade/{name}"}, method = RequestMethod.GET)
     public List<Grade> getGradeByNameAndQueryDsl(@PathVariable String name) {
         QGrade qGrade = QGrade.grade;
-        List<Grade> grades = jpaQueryFactory
+        return jpaQueryFactory
                 .selectFrom(qGrade)
                 .where(qGrade.name.like(name))
                 .fetch();
-        return grades;
     }
 
     @ApiOperation(value = "新增班级")
