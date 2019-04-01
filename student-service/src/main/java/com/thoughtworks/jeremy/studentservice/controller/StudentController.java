@@ -51,11 +51,10 @@ public class StudentController {
     @RequestMapping(path = {"queryDsl/students/{name}"}, method = RequestMethod.GET)
     public List<Student> getStudentsByNameAndQueryDsl(@PathVariable String name) {
         QStudent student = QStudent.student;
-        List<Student> students = jpaQueryFactory
+        return jpaQueryFactory
                 .selectFrom(student)
                 .where(student.name.eq(name))
                 .fetch();
-        return students;
     }
 
     @ApiOperation(value = "通过Jpa的方式根据学生名称获取学生列表")
@@ -68,8 +67,7 @@ public class StudentController {
     @RequestMapping(value = {"/robbin/students/info/{name}"}, method = RequestMethod.GET)
     public List<StudentResponseDto> getStudentInfoByNameRobbin(@PathVariable String name) {
         List<Student> students = studentRepository.queryByName(name);
-        List<StudentResponseDto> studentResponseDTOs = students.stream().peek(robbinInvoker::setClassNameByRobbin).map(StudentMapper.MAPPER::convertToStudentResponseDto).collect(Collectors.toList());
-        return studentResponseDTOs;
+        return students.stream().peek(robbinInvoker::setClassNameByRobbin).map(StudentMapper.MAPPER::convertToStudentResponseDto).collect(Collectors.toList());
     }
 
     @ApiOperation(value = "通过Feign client的方式根据学生名称获取学生信息以及所在班级")
@@ -77,8 +75,7 @@ public class StudentController {
     public List<StudentResponseDto> getStudentInfoByNameFeign(@PathVariable String name) {
         log.info("getStudentInfoByNameFeign:{}", name);
         List<Student> students = studentRepository.queryByName(name);
-        List<StudentResponseDto> studentResponseDTOs = students.stream().peek(this::setClassNameByFeignClient).map(StudentMapper.MAPPER::convertToStudentResponseDto).collect(Collectors.toList());
-        return studentResponseDTOs;
+        return students.stream().peek(this::setClassNameByFeignClient).map(StudentMapper.MAPPER::convertToStudentResponseDto).collect(Collectors.toList());
     }
 
     private void setClassNameByFeignClient(Student student) {
@@ -104,11 +101,10 @@ public class StudentController {
     @RequestMapping(value = {"/queryDsl/students/{currentPage}/{pageSize}"}, method = RequestMethod.GET)
     public List<Student> getStudentByPageAndQueryDsl(@PathVariable int currentPage, @PathVariable int pageSize) {
         QStudent student = QStudent.student;
-        List<Student> list = jpaQueryFactory
+        return jpaQueryFactory
                 .selectFrom(student)
                 .offset(currentPage == 0 ? 0 : currentPage * pageSize)
                 .limit(pageSize)
                 .fetch();
-        return list;
     }
 }
